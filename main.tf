@@ -13,7 +13,7 @@ provider "aws" {
   region = "ap-northeast-1"
 }
 
-resource "aws_instance" "app_server" {
+resource "aws_instance" "app_server1" {
   ami           = "ami-08308a523776f7ece"
   instance_type = "t2.micro"
 
