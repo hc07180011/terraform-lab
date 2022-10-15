@@ -38,7 +38,7 @@ jobs:
     - name: Download `tfstate` from S3
       run: |
         sudo apt update && sudo apt install awscli
-        aws s3 cp s3://main-data-techsol/terraform.tfstate terraform.tfstate || return 0
+        aws s3 cp s3://main-data-techsol/terraform.tfstate terraform.tfstate || true
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
