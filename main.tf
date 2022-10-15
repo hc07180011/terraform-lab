@@ -1,3 +1,5 @@
+# https://github.com/terraform-aws-modules/terraform-aws-lambda
+
 terraform {
   required_providers {
     aws = {
@@ -13,20 +15,23 @@ provider "aws" {
   region = "ap-northeast-1"
 }
 
-resource "aws_instance" "app_server1" {
-  ami           = "ami-08308a523776f7ece"
-  instance_type = "t2.micro"
-
-  tags = {
-    Name = "ExampleInstance"
-  }
+variable "lambda-entrypoint-num" {
+  type = list(string)
+  default = [ "1", "2" ]
 }
 
-resource "aws_instance" "app_server2" {
-  ami           = "ami-08308a523776f7ece"
-  instance_type = "t2.medium"
+module "lambda_function_container_image" {
+  source = "terraform-aws-modules/lambda/aws"
 
-  tags = {
-    Name = "ExampleInstance2"
-  }
+  for_each = toset(var.lambda-entrypoint-num)
+
+  function_name = "my-lambda-existing-package-ecr${each.key}"
+  description   = "Terraform Lambda test"
+
+  create_package = false
+
+  image_uri    = "434648438593.dkr.ecr.ap-northeast-1.amazonaws.com/hello-world:latest"
+  image_config_command = ["app.handler${each.key}"]
+
+  package_type = "Image"
 }
