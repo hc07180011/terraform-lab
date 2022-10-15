@@ -16,8 +16,8 @@ provider "aws" {
 }
 
 variable "lambda-entrypoint-num" {
-  type = list(string)
-  default = [ "1", "2" ]
+  type    = list(string)
+  default = ["1", "2"]
 }
 
 module "lambda_function_container_image" {
@@ -30,7 +30,7 @@ module "lambda_function_container_image" {
 
   create_package = false
 
-  image_uri    = "434648438593.dkr.ecr.ap-northeast-1.amazonaws.com/hello-world:latest"
+  image_uri            = "434648438593.dkr.ecr.ap-northeast-1.amazonaws.com/hello-world:latest"
   image_config_command = ["app.handler${each.key}"]
 
   package_type = "Image"
