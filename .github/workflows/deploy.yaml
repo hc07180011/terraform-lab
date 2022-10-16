@@ -35,9 +35,12 @@ jobs:
         role-session-name: terraform-session-1
         aws-region: ${{ env.AWS_REGION }}
 
+    - name: Install required `apt` packages
+      run: |
+        sudo apt update && sudo apt install awscli -y
+
     - name: Download `tfstate` from S3
       run: |
-        sudo apt update && sudo apt install awscli
         aws s3 cp s3://main-data-techsol/terraform.tfstate terraform.tfstate || true
 
     - name: Setup Terraform

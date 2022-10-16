@@ -20,6 +20,21 @@ variable "lambda-entrypoint-num" {
   default = ["1", "2"]
 }
 
+resource "aws_ecr_repository" "hello_world" {
+  name = "hello-world ECR"
+  provisioner "local-exec" {
+    command = <<EOT
+      docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+      docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+    EOT
+    environment = {
+      REGISTRY = "434648438593.dkr.ecr.ap-northeast-1.amazonaws.com"
+      REPOSITORY = "hello-world"
+      IMAGE_TAG = "latest"
+    }
+  }
+}
+
 module "lambda_function_container_image" {
   source = "terraform-aws-modules/lambda/aws"
 
@@ -34,4 +49,8 @@ module "lambda_function_container_image" {
   image_config_command = ["app.handler${each.key}"]
 
   package_type = "Image"
+
+  depends_on = [
+    aws_ecr_repository.hello_world
+  ]
 }
