@@ -24,6 +24,53 @@ resource "aws_ecr_repository" "hello_world_repo" {
   name = "hello-world"
 }
 
+resource "aws_ecr_repository_policy" "hello_world_repo_policy" {
+  repository = aws_ecr_repository.hello_world_repo.name
+
+  policy = <<EOF
+{
+    "Version": "2008-10-17",
+    "Statement": [
+        {
+            "Sid": "LambdaECRImageRetrievalPolicy",
+            "Effect": "Allow",
+            "Principal": "lambda.amazonaws.com",
+            "Action": [
+                "ecr:BatchGetImage",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:SetRepositoryPolicy",
+                "ecr:DeleteRepositoryPolicy",
+                "ecr:GetRepositoryPolicy"
+            ]
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_ecr_lifecycle_policy" "hello_world_lifecycle_policy" {
+  repository = aws_ecr_repository.hello_world_repo.name
+
+  policy = <<EOF
+{
+    "rules": [
+        {
+            "rulePriority": 1,
+            "description": "Not more than 10",
+            "selection": {
+                "tagStatus": "any",
+                "countType": "imageCountMoreThan",
+                "countNumber": 10
+            },
+            "action": {
+                "type": "expire"
+            }
+        }
+    ]
+}
+EOF
+}
+
 resource "null_resource" "docker_image1" {
   provisioner "local-exec" {
     command = <<EOT
