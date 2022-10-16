@@ -20,8 +20,11 @@ variable "lambda-entrypoint-num" {
   default = ["1", "2"]
 }
 
-resource "aws_ecr_repository" "hello_world" {
-  name = "hello-world ECR"
+resource "aws_ecr_repository" "hello_world_repo" {
+  name = "hello-world"
+}
+
+resource "null_resource" "docker_image1" {
   provisioner "local-exec" {
     command = <<EOT
       docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
@@ -33,6 +36,10 @@ resource "aws_ecr_repository" "hello_world" {
       IMAGE_TAG  = "latest"
     }
   }
+
+  depends_on = [
+    aws_ecr_repository.hello_world_repo
+  ]
 }
 
 module "lambda_function_container_image" {
@@ -51,6 +58,6 @@ module "lambda_function_container_image" {
   package_type = "Image"
 
   depends_on = [
-    aws_ecr_repository.hello_world
+    null_resource.docker_image1
   ]
 }
