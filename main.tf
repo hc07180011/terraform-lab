@@ -28,9 +28,9 @@ resource "aws_ecr_repository" "hello_world" {
       docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
     EOT
     environment = {
-      REGISTRY = "434648438593.dkr.ecr.ap-northeast-1.amazonaws.com"
+      REGISTRY   = "434648438593.dkr.ecr.ap-northeast-1.amazonaws.com"
       REPOSITORY = "hello-world"
-      IMAGE_TAG = "latest"
+      IMAGE_TAG  = "latest"
     }
   }
 }
