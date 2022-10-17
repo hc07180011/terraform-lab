@@ -55,6 +55,7 @@ resource "null_resource" "docker_image1" {
 
   provisioner "local-exec" {
     command = <<EOT
+      cat app.py
       aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin 434648438593.dkr.ecr.ap-northeast-1.amazonaws.com
       docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
       docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
