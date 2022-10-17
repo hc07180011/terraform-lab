@@ -56,7 +56,7 @@ resource "null_resource" "docker_image1" {
   provisioner "local-exec" {
     command = <<EOT
       cat app.py
-      aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin 434648438593.dkr.ecr.ap-northeast-1.amazonaws.com
+      aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin $REGISTRY
       docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
       docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
     EOT
@@ -73,6 +73,14 @@ resource "null_resource" "docker_image1" {
   ]
 }
 
+data "aws_ecr_image" "lambda_image1" {
+  depends_on = [
+    null_resource.docker_image1
+  ]
+  repository_name = "hello-world"
+  image_tag       = "latest"
+}
+
 module "lambda_function_container_image" {
   source = "terraform-aws-modules/lambda/aws"
 
@@ -83,8 +91,10 @@ module "lambda_function_container_image" {
 
   create_package = false
 
-  image_uri            = "434648438593.dkr.ecr.ap-northeast-1.amazonaws.com/hello-world:latest"
+  image_uri            = "${aws_ecr_repository.hello_world_repo.repository_url}@${data.aws_ecr_image.lambda_image1.id}"
   image_config_command = ["app.handler${each.key}"]
+
+  timeout = 900
 
   package_type = "Image"
 
