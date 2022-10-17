@@ -39,20 +39,21 @@ def init_logger(env: str = "dev") -> logging.Logger:
     ch.setLevel(logging.DEBUG)
     ch.setFormatter(formatter)
 
-    if env == "dev":
-        log_dir = ".logs"
-    else:
-        log_dir = tempfile.gettempdir()
+    if not ("LAMBDA_TASK_ROOT" in os.environ): # Do not write to .log/ in AWS Lambda
+        if env == "dev":
+            log_dir = ".logs"
+        else:
+            log_dir = tempfile.gettempdir()
 
-    os.makedirs(log_dir, exist_ok=True)
+        os.makedirs(log_dir, exist_ok=True)
 
-    log_filename = os.path.join(
-        log_dir, datetime.datetime.now().strftime("%Y-%m-%d_%H_%M_%S.log")
-    )
-    fh = logging.FileHandler(log_filename, "w", encoding="utf-8")
-    fh.setLevel(logging.DEBUG)
-    fh.setFormatter(formatter)
-    logger.addHandler(fh)
+        log_filename = os.path.join(
+            log_dir, datetime.datetime.now().strftime("%Y-%m-%d_%H_%M_%S.log")
+        )
+        fh = logging.FileHandler(log_filename, "w", encoding="utf-8")
+        fh.setLevel(logging.DEBUG)
+        fh.setFormatter(formatter)
+        logger.addHandler(fh)
 
     logger.info("Logger initialized.")
 
