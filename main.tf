@@ -17,7 +17,7 @@ provider "aws" {
 
 variable "lambda-entrypoint-num" {
   type    = list(string)
-  default = ["1", "2"]
+  default = ["1", "2", "3"]
 }
 
 resource "aws_ecr_repository" "hello_world_repo" {
