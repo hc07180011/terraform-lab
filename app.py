@@ -1,22 +1,15 @@
-import logging
-import traceback
-
-from utils.logger import init_logger
+from utils.handler import Handler
 
 
-logger = init_logger()
+func_handler = Handler()
 
 
 def handler1(event, context):
-    logger = logging.getLogger("rich")
-    logger.info("`handle1` triggerd")
-    return {"status": "`handler1-v4` triggered"}
+    return func_handler.run("handler1", print, 1)
 
 
 def handler2(event, context):
-    logger = logging.getLogger("rich")
-    logger.info("`handle2` triggerd")
-    return {"status": "`handler2-v4` triggered"}
+    return func_handler.run("handler2", print, 2)
 
 
 def f3():
@@ -32,11 +25,10 @@ def f1():
 
 
 def handler3(event, context):
-    logger = logging.getLogger("rich")
-    logger.info("`handle3` triggerd")
-    try:
-        f1()
-        return {"status": "`handler3-v4` triggered"}
-    except Exception as e:
-        logger.critical(traceback.format_exc().replace("\n", "\r"))
-        return {"status": "internal error", "message": repr(e)}
+    return func_handler.run("handler3", f1)
+
+
+if __name__ == "__main__":
+    print(handler1(1, 2))
+    print(handler2(1, 2))
+    print(handler3(1, 2))

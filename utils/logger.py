@@ -35,11 +35,11 @@ def init_logger(env: str = "dev") -> logging.Logger:
     formatter = logging.Formatter(FORMAT, datefmt="%Y%m%d %H:%M:%S")
     logging.basicConfig(level="NOTSET", format=FORMAT, handlers=[RichHandler()])
 
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
-    ch.setFormatter(formatter)
+    # ch = logging.StreamHandler()
+    # ch.setLevel(logging.DEBUG)
+    # ch.setFormatter(formatter)
 
-    if not ("LAMBDA_TASK_ROOT" in os.environ): # Do not write to .log/ in AWS Lambda
+    if "LAMBDA_TASK_ROOT" not in os.environ: # Do not write to .log/ in AWS Lambda
         if env == "dev":
             log_dir = ".logs"
         else:
