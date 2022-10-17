@@ -1,4 +1,5 @@
 import logging
+import traceback
 
 from utils.logger import init_logger
 
@@ -37,5 +38,5 @@ def handler3(event, context):
         f1()
         return {"status": "`handler3-v4` triggered"}
     except Exception as e:
-        logger.critical(e, exc_info=True)
+        logger.critical(traceback.format_exc().replace("\n", "\r"))
         return {"status": "internal error", "message": repr(e)}
