@@ -48,6 +48,11 @@ EOF
 }
 
 resource "null_resource" "docker_image1" {
+
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+
   provisioner "local-exec" {
     command = <<EOT
       aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin 434648438593.dkr.ecr.ap-northeast-1.amazonaws.com
@@ -59,6 +64,7 @@ resource "null_resource" "docker_image1" {
       REPOSITORY = "hello-world"
       IMAGE_TAG  = "latest"
     }
+
   }
 
   depends_on = [
