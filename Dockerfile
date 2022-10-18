@@ -4,4 +4,4 @@ WORKDIR ${LAMBDA_TASK_ROOT}
 
 COPY . ${LAMBDA_TASK_ROOT}
 
-RUN  pip3 install -r requirements.txt -t .
+RUN pip3 install -r requirements.txt -t .

@@ -38,6 +38,7 @@ jobs:
     - name: Install required `apt` packages
       run: |
         sudo apt update && sudo apt install awscli -y
+        mkdir tmp/; cd tmp/
 
     - name: Download `tfstate` from S3
       run: |
